@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
         integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -19,7 +20,7 @@
     <title>Document</title>
 </head>
 
-<body class="darSk-mode">
+<body class="darsk-mode">
     <header>
         <div class="header-content">
             <div class="storage">
@@ -46,7 +47,7 @@
             <div class="navbar">
                 <a href="#" class="circle-button">
                     <i class="fa-sharp fa-solid fa-circle-plus"></i>
-                    <span class="description">Nova Pasta</span>
+                    <span class="description">Adicionar Arquivo</span>
                 </a>
                 <a href="#" class="circle-button">
                     <i class="fas fa-folder-plus"></i>
@@ -54,24 +55,24 @@
                 </a>
                 <a href="#" class="circle-button">
                     <i class="fa-solid fa-pencil"></i>
-                    <span class="description">Nova Pasta</span>
+                    <span class="description">Editar Arquivo</span>
                 </a>
                 <a href="#" class="circle-button">
                     <i class="fa-solid fa-trash"></i>
-                    <span class="description">Nova Pasta</span>
+                    <span class="description">Excluir Arquivo</span>
                 </a>
                 <div class="line"></div>
                 <a href="#" class="circle-button">
                     <i class="fa-solid fa-gear"></i>
-                    <span class="description">Nova Pasta</span>
+                    <span class="description">Configurações</span>
                 </a>
                 <a href="#" class="circle-button">
                     <i class="fa-solid fa-right-from-bracket"></i>
-                    <span class="description">Nova Pasta</span>
+                    <span class="description">Sair</span>
                 </a>
                 <a href="#" class="circle-button" id="dark-mode-button">
                     <i class="fa-solid fa-moon"></i>
-                    <span class="description">Nova Pasta</span>
+                    <span class="description">Modo Escuro</span>
                 </a>
             </div>
         </nav>
@@ -85,7 +86,7 @@
                 </div>
             </div>
 
-            <div class="item">
+            <div class="item selected">
                 <div class="file">
                     <i class="fas fa-file"></i>
                     <span>Arquivoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.py</span>
@@ -260,8 +261,8 @@
 
     <div class="new-folder-wraper">
         <form action="#">
+            <div>Nova Pasta</div>
             <div>
-                <span>Nova Pasta</span>
                 <input type="text">
                 <button type="submit" class="btn-enter"><i class="fa-solid fa-square-check"></i></button>
             </div>
