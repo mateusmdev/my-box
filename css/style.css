@@ -68,19 +68,20 @@ main{
     rigsht: 0;
     botdtom: 0;
     dissplay: none;
-    z-index: -1;
+    z-insdex: -1;
 }
 h1{
     color: var(--color-title);
     font-family: 'Raleway', sans-serif;
 }
 input[type=text]{
-    border-radius: 3px;
+    border-radius: 4px;
     border: none;
     padding: 3px 12px;
     font-family: 'Quicksand', sans-serif;
     font-weight: bold;
     border: 1px solid var(--color-title);
+    outline: none;
 }
 input:focus{
     bordesr: 1px solid var(--primary-color);
