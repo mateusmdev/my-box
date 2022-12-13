@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Jost:wght@300&family=Quicksand:wght@300&family=Raleway&family=Urbanist:ital@1&display=swap"
+        rel="stylesheet">
+    <title>My Box</title>
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <div class="storage">
+
+                <div class="progressbar">
+                    <div class="progress"></div>
+                </div>
+                <br>
+                <span>21554/50000</span>
+            </div>
+
+            <h1>Meus arquivos</h1>
+            <div class="current-path">
+                <ol>
+                    <li> <a href="#">Root</a></li>
+                    <li>> <a href="#">Meus Arquivos</a></li>
+                    <li>> <a href="#">Meus Arquivos</a></li>
+                    <li>> Last Folder</li>
+                </ol>
+                <input type="text">
+            </div>
+        </div>
+        <nav class="nav">
+            <div class="navbar">
+                <a href="#" class="circle-button" id="upload-file">
+                    <i class="fa-sharp fa-solid fa-circle-plus"></i>
+                    <span class="description">Adicionar Arquivo</span>
+                </a>
+                <a href="#" class="circle-button" id="new-folder">
+                    <i class="fas fa-folder-plus"></i>
+                    <span class="description">Nova Pasta</span>
+                </a>
+                <a href="#" class="circle-button" id="edit-item">
+                    <i class="fa-solid fa-pencil"></i>
+                    <span class="description">Editar Arquivo</span>
+                </a>
+                <a href="#" class="circle-button" id="delete-item">
+                    <i class="fa-solid fa-trash"></i>
+                    <span class="description">Excluir Arquivo</span>
+                </a>
+                <div class="line"></div>
+                <a href="settings.html" class="circle-button">
+                    <i class="fa-solid fa-gear"></i>
+                    <span class="description">Configurações</span>
+                </a>
+                <a href="#" class="circle-button" id="logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="description">Sair</span>
+                </a>
+                <a href="#" class="circle-button" id="dark-mode-button">
+                    <i class="fa-solid fa-moon"></i>
+                    <span class="description">Modo Escuro</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <section class="content">
+            <div class="item">
+                <div class="folder">
+                    <i class="fas fa-folder"></i>
+                    <span>Meus arquivos</span>
+                </div>
+            </div>
+
+            <div class="item selected">
+                <div class="file">
+                    <i class="fas fa-file"></i>
+                    <span>Arquivoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-brands fa-python"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-brands fa-js"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-brands fa-square-js"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-sharp fa-solid fa-c"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-brands fa-html5"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-brands fa-css3-alt"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-solid fa-image"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-regular fa-image"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-solid fa-images"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-solid fa-file-audio"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-solid fa-music"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-sharp fa-solid fa-file-music"></i>
+                    <span></span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-brands fa-php"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-brands fa-java"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-brands fa-vuejs"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fa-solid fa-file-zipper"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fas fa-file"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fas fa-file"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fas fa-file"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fas fa-file"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fas fa-file"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fas fa-file"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fas fa-file"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="file">
+                    <i class="fas fa-file"></i>
+                    <span>Arquivo.py</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <aside>
+        <form action="#" class="read-only">
+            <input type="file" name="upload-file" id="upload-input" multiple="multiple">
+        </form>
+
+        <div class="modal-wraper">
+            <div class="upload-modal">
+                <div class="modal-content">
+                    <div>Enviando o arquivo <span class="file-name">file.pdf</span></div>
+                    <div><span class="time">min</span> restante</div>
+                </div>
+
+                <div class="progressbar">
+                    <div class="progress"></div>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+</body>
+<script src="./env.js"></script>
+<script src="./js/dao.js"></script>
+<script src="./js/user.js"></script>
+<script src="./js/view.js"></script>
+<script src="./js/controller.js"></script>
+<script src="firebase.js"></script>
+
+<script defer type="module">
+    const f = new Firebase()
+    
+
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js'
+    import { getDatabase, ref, set, child, push, onValue } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js'
+    import { getStorage, ref as refStorage } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js'
+    
+    //const { getDatabase, ref, set } = "firebase/database";
+    f.addObject(ref, 'database')
+    console.log(f)
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    console.log(database)
+    const dao = new DAO({database, ref, set, child, push, onValue})
+    const controller = new Controller(new View(), new User(), {getStorage, refStorage})
+
+    //const model = new User()
+    //console.log(model)
+    //dao.save(model)
+    //dao.read()
+    //dao.save(model)
+    //dao.save(model)
+</script>
+</html>

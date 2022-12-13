@@ -1,0 +1,89 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Jost', sans-serif;
+
+}h1{
+    font-family: 'Raleway', sans-serif;
+    margin: 0;
+}
+html{
+    font-size: 1rem;
+}
+body{
+    dispslay: flex;
+    positsion: relative;
+    background-color: var(--bg-primary);
+}
+header{
+    width: 100%;
+    padding: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    background-color: #469ff8;
+}
+main{
+    padding: 2.331rem 0 2rem 0;
+}
+footer{
+    padding: 1rem;
+    background-color: #25273c;
+    color: #56657f;
+    text-align: center;
+}
+footer .footer-link{
+    padding-top: 1.5rem;
+    text-align: center;
+}
+footer .footer-link a{
+    color: #469ff8;
+    display: inline-block;
+    margin-right: 12px;
+}
+.logo-container img{
+    width: 10%;
+    height: 10%;
+    margin: 0 20px;
+    margin-left: 15px;
+}
+.logo-container a{
+    font-size: 1.8rem;
+    text-decoration: none;
+    color: rgb(143, 141, 141);
+    display: flex;
+    align-items: center;
+}
+.logo-container a{
+    color: white;
+}
+nav a{
+    margin: 0 7px;
+}
+nav #login{
+    background-color: white;
+    color: #469ff8;;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+}
+a{
+    text-decoration: none;
+    color: white;
+}
+
+.btn{
+    display: inline-block;
+    border: 1px solid #469ff8;
+    padding: 0.4rem 1.5rem; 
+    border-radius: 5px;
+    margin: 20px 10px 0 0;
+    background-color: white;
+    color: #469ff8;
+}
+.btn.outline{
+    background-color: #469ff8;
+    color: white;
+}

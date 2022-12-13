@@ -1,0 +1,61 @@
+section{
+    padding: 0 0.7rem 1rem 0.7rem;
+    text-align: center;
+}
+.card-container{
+    display: flex;
+    justify-content: space-around;
+}
+.card{
+    text-align: center;
+    margin-top: 2rem;
+}
+.card-img{
+    margin: 0 auto 10px auto;
+}
+.card-img img{
+    width: min(250px, 90%);
+    height: min(250px, 90%);
+    right: -5px;
+    bottom: 20px;
+}
+
+.home h1{
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+}
+.home h2{
+    font-size: 1.2rem;
+    font-weight: normal;
+    font-family: 'Raleway', sans-serif;
+}
+#home-btn{
+    margin-top: 70px;
+    display: flex;
+    justify-content: center;
+}
+#home-btn a{
+    padding: 0.5rem 1.5rem;
+}
+
+@media (max-width: 860px){
+    .card-container{
+        flex-direction: column;
+    }
+    .card{
+        bosrder: 1px solid red;
+        text-align: center;
+        margin-top: 5rem;
+    }
+    #first-card{
+        margin-top: 2rem;
+    }
+    .card-img img{
+        width: min(420px, 80%);
+        height: min(420px, 80%);
+    }
+    .card .card-content{
+        margin-top: 1.3rem;
+        font-size: 1.6rem;
+    }
+}

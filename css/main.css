@@ -12,13 +12,11 @@ header{
     position: relative;
     width: calc(100% - 50px);
     left: 50px;
-    backgrounsd-color: red;
 }
 
 .storage{
     text-align: center;
     margin-top: 20px;
-    bacskground-color: red;
     color: var(--secundary-color);
     font-family: 'Jost', sans-serif;
 }
