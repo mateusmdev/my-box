@@ -51,11 +51,13 @@ section{
         margin-top: 2rem;
     }
     .card-img img{
-        width: min(420px, 80%);
-        height: min(420px, 80%);
+        width: 80%;
+        max-width: 420px;
     }
     .card .card-content{
         margin-top: 1.3rem;
         font-size: 1.6rem;
     }
 }
+
+
