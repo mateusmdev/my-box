@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="/public/css/normalize.css">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
         integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -23,19 +23,24 @@
 <body>
     <header>
         <div class="header-content">
+            <div class="read-only" id="uniqueID" data-id="<%= data.id%>"></div>
             <div class="storage">
 
                 <div class="progressbar">
                     <div class="progress"></div>
                 </div>
                 <br>
-                <span>21554/50000</span>
+                <span>
+                    <%= data.usedStorage %>/<%= data.totalStorage%>
+                </span>
             </div>
 
             <h1>Meus arquivos</h1>
             <div class="current-path">
                 <ol>
-                    <li> <a href="#">Root</a></li>
+                    <li> <a href="#">
+                            <%= data.name %>
+                        </a></li>
                     <li>> <a href="#">Meus Arquivos</a></li>
                     <li>> <a href="#">Meus Arquivos</a></li>
                     <li>> Last Folder</li>
@@ -53,11 +58,11 @@
                     <i class="fas fa-folder-plus"></i>
                     <span class="description">Nova Pasta</span>
                 </a>
-                <a href="#" class="circle-button" id="edit-item">
+                <a href="#" class="circle-button disabled" id="edit-item">
                     <i class="fa-solid fa-pencil"></i>
                     <span class="description">Editar Arquivo</span>
                 </a>
-                <a href="#" class="circle-button" id="delete-item">
+                <a href="#" class="circle-button disabled" id="delete-item">
                     <i class="fa-solid fa-trash"></i>
                     <span class="description">Excluir Arquivo</span>
                 </a>
@@ -263,31 +268,40 @@
             </div>
         </div>
 
+        <div class="new-folder-wraper">
+            <div class="new-folder-box">
+                <form action="#" id="folder-form">
+                    <span>Nova Pasta: </span>
+                    <input type="text" name="new-folder" id="new-folder-input">
+                </form>
+            </div>
+        </div>
     </aside>
 </body>
-<script src="./env.js"></script>
-<script src="./js/dao.js"></script>
-<script src="./js/user.js"></script>
-<script src="./js/view.js"></script>
-<script src="./js/controller.js"></script>
-<script src="firebase.js"></script>
+<script src="/public/env.js"></script>
+<script src="/public/js/dao.js"></script>
+<script src="/public/js/model/user.js"></script>
+<script src="/public/js/view/main.view.js"></script>
+<script src="/public/js/controller/main.controller.js"></script>
 
 <script defer type="module">
-    const f = new Firebase()
-    
-
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js'
     import { getDatabase, ref, set, child, push, onValue } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js'
-    import { getStorage, ref as refStorage } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js'
-    
+    import { getStorage, ref as refStorage, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js'
+
     //const { getDatabase, ref, set } = "firebase/database";
-    f.addObject(ref, 'database')
-    console.log(f)
+    //f.addObject(ref, 'database')
+    //console.log(f)
     const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    console.log(database)
-    const dao = new DAO({database, ref, set, child, push, onValue})
-    const controller = new Controller(new View(), new User(), {getStorage, refStorage})
+    const realtimeDatabase = {
+        instance: getDatabase(app),
+        ref,
+        set,
+        onValue
+    }
+    //console.log(database)
+    //const dao = new DAO({ database, ref, set, child, push, onValue })
+    const controller = new Controller(new View(), new User(), { getStorage, refStorage, uploadBytesResumable, getDownloadURL }, realtimeDatabase)
 
     //const model = new User()
     //console.log(model)
@@ -296,4 +310,5 @@
     //dao.save(model)
     //dao.save(model)
 </script>
+
 </html>

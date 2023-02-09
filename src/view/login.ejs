@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="./css/page.css">
-    <link rel="stylesheet" href="./css/login.css">
+    <link rel="stylesheet" href="/public/css/normalize.css">
+    <link rel="stylesheet" href="/public/css/page.css">
+    <link rel="stylesheet" href="/public/css/login.css">
 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -20,7 +20,7 @@
     <header>
         <div class="logo-container">
             <a href="index.html">
-                <img src="./assets/logo.svg" alt="">
+                <img src="public/assets/logo.svg" alt="">
                 <span id="name">My Box</span>
             </a>
         </div>
@@ -37,12 +37,12 @@
             <div class="container">
 
                 <div class="img-wrapper">
-                    <img src="./assets/login.svg" alt="">
+                    <img src="/public/assets/login.svg" alt="">
                 </div>
 
                 <div class="login-wrapper">
                     <h1>Login</h1>
-                    <form action="#">
+                    <form action="/user/authentication" method="POST">
                         <div class="input-wrapper">
                             <label for="email">E-mail</label>
                             <input type="text" id="email" name="email" placeholder="Digite seu e-mail">
@@ -53,7 +53,7 @@
                         </div>
                         <div>
                             <a href="#">Cadastrar</a>
-                            <button type="submit" class="btn outline">Login</button>
+                            <button type="submit" class="btn outline" id="submit">Login</button>
 
                         </div>
                     </form>
@@ -65,9 +65,9 @@
         <div>2022 - My Box. Todos os direitos reservados</div>
 
         <div class="footer-link">
-            <a href="#">Sobre</a>
+            <a href="index.html">Sobre</a>
             <a href="#">Cadastre-se</a>
-            <a href="#">Login</a>
+            <a href="login.html">Login</a>
         </div>
     </footer>
 </body>

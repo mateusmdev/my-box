@@ -108,11 +108,17 @@ input:focus{
     transition: ease 200ms;
     z-index: 10;
 }
-.circle-button:hover{
+.circle-button:hover:not(.disabled){
     transform: scale(1.2, 1.2);
     background: var(--primary-color-hover);
     color: var(--color-icon);
 }
+
+.disabled{
+    opacity: 0.4;
+    cursor: initial;
+}
+
 .circular-button i{
     font-size: 1.375rem;
 }
@@ -132,7 +138,7 @@ input:focus{
     font-family: 'Jost', sans-serif;
 }
 
-.circle-button:hover > .description{
+.circle-button:hover:not(.disabled) > .description{
     transform: scale(0.87, 0.87);
     display: inline;
 }

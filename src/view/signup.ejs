@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/public/css/normalize.css" />
+    <link rel="stylesheet" href="/public/css/page.css" />
+    <link rel="stylesheet" href="/public/css/signup.css" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Jost:wght@300&family=Quicksand:wght@300&family=Raleway&family=Urbanist:ital@1&display=swap"
+        rel="stylesheet">
+    <title>Signup</title>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <a href="index.html">
+                <img src="./assets/logo.svg" alt="">
+                <span id="name">My Box</span>
+            </a>
+        </div>
+
+        <nav>
+            <a href="index.html">Sobre</a> |
+            <a href="#">Cadastre-se</a>
+            <a href="login.html" id="login">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <div class="container">
+
+                <div class="login-wrapper">
+                    <h1>Login</h1>
+                    <form action="/user/create" method="POST">
+                        <div class="input-wrapper">
+                            <label for="email">Nome</label>
+                            <input type="text" id="name" name="name" placeholder="Digite seu nome">
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="email">E-mail</label>
+                            <input type="text" id="email" name="email" placeholder="Digite seu e-mail">
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="password">Senha</label>
+                            <input type="password" id="password" name="password" placeholder="Senha">
+                        </div>
+                        <div>
+                            <a href="#">Login</a>
+                            <button type="submit" class="btn outline" id="submit">Cadastrar</button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div>2022 - My Box. Todos os direitos reservados</div>
+
+        <div class="footer-link">
+            <a href="index.html">Sobre</a>
+            <a href="#">Cadastre-se</a>
+            <a href="login.html">Login</a>
+        </div>
+    </footer>
+</body>
