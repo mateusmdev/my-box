@@ -27,7 +27,9 @@ class Firebase {
             const database = realtimeDatabase.getDatabase(this.app)
             const ref = realtimeDatabase.ref(database, path)
 
-            await set(push(ref), obj)
+            let result = await set(push(ref), obj)
+
+            return result || 'Data saved success'
         } catch (error) {
             throw error
         }
@@ -47,8 +49,9 @@ class Firebase {
             updates[path] = obj
 
             const result = await update(ref, updates)
-            if(result) return "Data Update Success"
-            else return "Data Update Failed"
+
+            return result || "Data Update Success"
+
         } catch (error) {
             return error
         }

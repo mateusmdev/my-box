@@ -6,7 +6,7 @@ const session = require('express-session')
 require('dotenv').config()
 
 const userRouter = require('./src/routes/user.js')
-//const clientRouter = require('./routes/client.js')
+const pagesRouter = require('./src/routes/pages.js')
 
 app.use(session({
     secret: process.env.SESSION || 'keyboard',
@@ -23,6 +23,6 @@ app.use('/public', express.static(path.join(__dirname, '/src/public')))
 app.set('views', path.join(__dirname, '/src/view'))
 
 app.use('/', userRouter)
-//app.use('/', clientRouter)
+app.use('/', pagesRouter)
 
 module.exports = app

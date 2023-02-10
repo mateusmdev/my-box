@@ -48,39 +48,7 @@
                 <input type="text">
             </div>
         </div>
-        <nav class="nav">
-            <div class="navbar">
-                <a href="#" class="circle-button" id="upload-file">
-                    <i class="fa-sharp fa-solid fa-circle-plus"></i>
-                    <span class="description">Adicionar Arquivo</span>
-                </a>
-                <a href="#" class="circle-button" id="new-folder">
-                    <i class="fas fa-folder-plus"></i>
-                    <span class="description">Nova Pasta</span>
-                </a>
-                <a href="#" class="circle-button disabled" id="edit-item">
-                    <i class="fa-solid fa-pencil"></i>
-                    <span class="description">Editar Arquivo</span>
-                </a>
-                <a href="#" class="circle-button disabled" id="delete-item">
-                    <i class="fa-solid fa-trash"></i>
-                    <span class="description">Excluir Arquivo</span>
-                </a>
-                <div class="line"></div>
-                <a href="settings.html" class="circle-button">
-                    <i class="fa-solid fa-gear"></i>
-                    <span class="description">Configurações</span>
-                </a>
-                <a href="#" class="circle-button" id="logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span class="description">Sair</span>
-                </a>
-                <a href="#" class="circle-button" id="dark-mode-button">
-                    <i class="fa-solid fa-moon"></i>
-                    <span class="description">Modo Escuro</span>
-                </a>
-            </div>
-        </nav>
+        <%- include('./parts/header'); %>
     </header>
     <main>
         <section class="content">

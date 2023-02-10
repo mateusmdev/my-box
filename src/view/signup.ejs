@@ -16,21 +16,7 @@
     <title>Signup</title>
 </head>
 <body>
-    <header>
-        <div class="logo-container">
-            <a href="index.html">
-                <img src="./assets/logo.svg" alt="">
-                <span id="name">My Box</span>
-            </a>
-        </div>
-
-        <nav>
-            <a href="index.html">Sobre</a> |
-            <a href="#">Cadastre-se</a>
-            <a href="login.html" id="login">Login</a>
-        </nav>
-    </header>
-
+    <%- include('./parts/header'); %>
     <main>
         <section>
             <div class="container">
@@ -60,14 +46,6 @@
             </div>
         </section>
     </main>
-
-    <footer>
-        <div>2022 - My Box. Todos os direitos reservados</div>
-
-        <div class="footer-link">
-            <a href="index.html">Sobre</a>
-            <a href="#">Cadastre-se</a>
-            <a href="login.html">Login</a>
-        </div>
-    </footer>
+    <%- include('./parts/footer'); %>
 </body>
+</html>
