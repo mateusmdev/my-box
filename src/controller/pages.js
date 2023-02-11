@@ -27,15 +27,15 @@ module.exports = {
                     res.status(201).render('main', { data })
 
                 else
-                    res.status(302).redirect('/login',)
+                    res.status(302).redirect('/login')
             }else{
-                res.status(302).redirect('/login',)
+                res.status(302).redirect('/login')
             }
             
         } catch (error) {
             console.log(error)
             throw error
-            res.status(302).redirect('/login',)
+            res.status(302).redirect('/login')
         }
     },
 

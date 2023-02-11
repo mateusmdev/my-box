@@ -31,8 +31,6 @@ html{
     font-size: 1rem;
 }
 body{
-    dispslay: flex;
-    positsion: relative;
     background-color: var(--bg-primary);
     height: 100vh;
 }
@@ -44,7 +42,6 @@ nav{
     top: 0;
     left: 0;
     bottom: 0;
-    bordser: 1px solid blue;
     width: 50px;
     height: 100%;
     background-color: var(--bg-secundary);
@@ -60,14 +57,9 @@ nav{
 }
 main{
     padding: 0.7rem;
-    backsground-color: orange;
     width: calc(100% - 50px);
-    min-hdeight: 65vh;
     position: relative;
     left: 50px;
-    rigsht: 0;
-    botdtom: 0;
-    dissplay: none;
     z-insdex: -1;
 }
 h1{
@@ -82,9 +74,6 @@ input[type=text]{
     font-weight: bold;
     border: 1px solid var(--color-title);
     outline: none;
-}
-input:focus{
-    bordesr: 1px solid var(--primary-color);
 }
 .line{
     border-top: 1px solid var(--line-color);
@@ -103,8 +92,6 @@ input:focus{
     display: inline-block;
     color: var(--color-text);    
     font-weight: bold;
-    backsground-color: rgba(25, 118, 2100, 1);
-    box-shadsow: -1px 3px 4px 0 rgba(0, 0, 0, 0.5);
     transition: ease 200ms;
     z-index: 10;
 }
@@ -150,15 +137,12 @@ input:focus{
         position: fixed;
         right: 20px;
         top: 20px;
-        backsground-color: red;
         z-index: 100;
     }
     #dark-mode-button:hover .description{
         left: initial;
         right: 0;
         margin-right: 35px;
-    }
-    main, header, .item{
     }
     .navbar{
         margin-top: -5px;
@@ -176,8 +160,6 @@ input:focus{
         position: fixed;
         right: 20px;
         top: 20px;
-    }
-    main, header{
     }
     .navbar{
         margin-top: -5px;
