@@ -5,23 +5,15 @@ class View {
         this.newFolderButton = this.getElement('#new-folder')
         this.uploadFileButton = this.getElement('#upload-file')
         this.editFileButton = this.getElement('#edit-item')
+        this.deleteFileButton = this.getElement('#delete-item')
         this.fileInput = this.getElement('#upload-input')
         this.logoutButton = this.getElement('#logout')
         this.newFolderForm = this.getElement('#folder-form')
         this.contentArea = this.getElement('section.content')
         this.files = this.getAllElements('.item')
-    }
-
-    getElement(selector) {
-        const element = document.querySelector(selector)
-        //if (!element) throw new Error("Element doesn't exist")
-        return element
-    }
-
-    getAllElements(selector) {
-        const element = document.querySelectorAll(selector)
-        //if (!element) throw new Error("Elements doesn't exist")
-        return element
+        this.folderListElements = this.getElement('ol li a', true)
+        this.modal = this.getElement('.new-folder-wraper')
+        this.body = this.getElement('body')
     }
 
     _addEvent(element, action, handler) {
@@ -32,16 +24,6 @@ class View {
     }
 
     async _addEventAll(elementsList, action, handler) {
-        /*
-        console.log(elementsList);
-        [...elementsList].forEach(element => {
-            element.addEventListener(action, event => {
-                event.preventDefault()
-                handler()
-            })
-        })*/
-
-
         const promises = [...elementsList].map(element => {
             return new Promise(function (resolve, reject) {
                 element.addEventListener(action, event => {
@@ -53,38 +35,58 @@ class View {
             })
         })
 
-        const result = await Promise.all(promises)
-        //console.log(result)
-        //console.log('resultado promise')
+        await Promise.all(promises)
+    }
 
+    getElement(selector, allElements = false) {
+        let element
+
+        if (allElements) element = document.querySelectorAll(selector)
+        else element = document.querySelector(selector)
+        
+        return element
+    }
+
+    getAllElements(selector) {
+        const element = document.querySelectorAll(selector)
+        //if (!element) throw new Error("Elements doesn't exist")
+        return element
+    }
+
+    bindChangeFiles(handler) {
+        this._addEvent(this.contentArea, 'changeFiles', handler)
+    }
+
+    bindClearSelect(handler) {
+        this._addEvent(this.contentArea, 'click', handler)
+    }
+
+    bindSubmitFolder(handler) {
+        this._addEvent(this.newFolderForm, 'submit', handler)
     }
 
     bindDarkMode(handler) {
         this._addEvent(this.darkModeButton, 'click', handler)
     }
 
-    bindDeleteItems(handler) {
-        //this._addEvent
+    bindDeleteFiles(handler) {
+        this._addEvent(this.deleteFileButton, 'click', handler)
     }
 
-    bindNewFolderButton(handler) {
-        this._addEvent(this.newFolderButton, 'click', handler)
-    }
-
-    bindUploadFile(handler) {
-        this._addEvent(this.uploadFileButton, 'click', handler)
-    }
-
-    bindLogout(handler) {
-        this._addEvent(this.logoutButton, 'click', handler)
+    bindEditFiles(handler) {
+        this._addEvent(this.editFileButton, 'click', handler)
     }
 
     bindFileInput(handler) {
         this._addEvent(this.fileInput, 'change', handler)
     }
 
-    bindCreateFolder(handler) {
-        this._addEvent(this.newFolderForm, 'submit', handler)
+    bindLogout(handler) {
+        this._addEvent(this.logoutButton, 'click', handler)
+    }
+
+    bindNewFolderButton(handler) {
+        this._addEvent(this.newFolderButton, 'click', handler)
     }
 
     bindSelectFiles(handler) {
@@ -92,29 +94,58 @@ class View {
         this._addEventAll(this.files, 'click', handler)
     }
 
-    bindEditFiles(handler) {
-        this._addEvent(this.editFileButton, 'click', handler)
+    bindOpenFiles(handler){
+        /*
+        const timeout = timer => new Promise((resolve, reject) => 
+                setTimeout(() => resolve(), timer)
+        )*/
+        
+        //await timeout(2000)
+
+        this.files = this.getAllElements('.item')
+        this._addEventAll(this.files, 'dblclick', handler)
     }
 
-    bindClearSelect(handler) {
-        this._addEvent(this.contentArea, 'click', handler)
+    bindUploadFile(handler) {
+        this._addEvent(this.uploadFileButton, 'click', handler)
     }
 
-    bindChangeFiles(handler) {
-        this._addEvent(this.contentArea, 'changeFiles', handler)
+    bindFolderList(handler) {
+        this.folderListElements = this.getAllElements('ol li a', true)
+        this._addEventAll(this.folderListElements, 'click', handler)
+    }
+
+    bindCancelModal(handler) {
+        this._addEvent(this.body, 'keydown', handler)
+        this._addEvent(this.modal, 'click', handler)
+    }
+
+    updateFolderList(list) {
+        const ol = this.getElement('ol')
+        let html = ''
+
+        list.forEach((name, index)=> {
+            const element = index === 0 ?`<li><a href="#" id="root-element">${name}</a></li>` : `<li>> <a href="#">${name}</a></li>`
+
+            html += element
+        })
+
+        if (list.length === 0) html = `<li> <a href="#">/</a></li>`
+
+        ol.innerHTML = html
     }
 
     displayModalFolder() {
         let template = `
         <div class="new-folder-wraper">
-        <form action="#">
-            <div>Nova Pasta</div>
-            <div>
-                <input type="text">
-                <button type="submit" class="btn-enter"><i class="fa-solid fa-square-check"></i></button>
-            </div>
-        </form>
-    </div>
+            <form action="#">
+                <div>Nova Pasta</div>
+                <div>
+                    <input type="text">
+                    <button type="submit" class="btn-enter"><i class="fa-solid fa-square-check"></i></button>
+                </div>
+            </form>
+        </div>
         `
 
         return template
@@ -128,7 +159,6 @@ class View {
     }
 
     _fileType(mimetype) {
-        console.log(mimetype)
         const icons = {
             'text/x-csrc': 'fa-sharp fa-solid fa-c',
             'text/css': 'fa-brands fa-css3-alt',
@@ -155,12 +185,13 @@ class View {
     }
 
     createFile(data) {
-        const html = `<div class="item" data-file="${data.key}">
-        <div class="folder">
-            <i class="${this._fileType(data.type)}"></i>
-            <span>${data.name}</span>
-        </div>
-    </div>`
+        const attr = (data.type !== 'folder') ? `data-url="${data.downloadURL}"` : ''
+        const html = `<div class="item" data-file="${data.key}" data-type="${data.type}" data-name="${data.name}" ${attr} data-date="${data.date}">
+            <div class="folder">
+                <i class="${this._fileType(data.type)}"></i>
+                <span>${data.name}</span>
+            </div>
+        </div>`
 
         const fileItem = document.createElement('div')
         fileItem.innerHTML = html

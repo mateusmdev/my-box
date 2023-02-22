@@ -1,39 +1,31 @@
-
-
 class User{
     constructor(){
-        this._email = 'jogh@mail.com'
-        this._name = 'dfdsfsd'
-        this._files = []
-        this._folderPath = []
-        this._createdAt = Date.now()
+        this._currentFolder
+        this._folderList = []
+        this._keyList = []
     }
 
-    get email(){
-        return this._email
+    get currentFolder(){
+    	return this._currentFolder
     }
 
-    set email(value){
-        this._email = value
+    set currentFolder(value){
+    	this._currentFolder = value
     }
 
-    get files(){
-        return [].concat(this._files)
+    get folderList(){
+    	return this._folderList
     }
 
-    set files(value){
-        this._files = value
+    set folderList(value){
+    	this._folderList = value
     }
 
-    get folderPath(){
-        return [].concat(this._folderPath)
+    get keyList(){
+    	return this._keyList
     }
 
-    set folderPath(value){
-        this._folderPath = value
-    }
-
-    get createdAt(){
-        return this._createdAt
+    set keyList(value){
+    	this._keyList = value
     }
 }

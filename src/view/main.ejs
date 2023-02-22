@@ -38,17 +38,15 @@
             <h1>Meus arquivos</h1>
             <div class="current-path">
                 <ol>
-                    <li> <a href="#">
+                    <li> <a href="#" id="root-folder">
                             <%= data.name %>
                         </a></li>
-                    <li>> <a href="#">Meus Arquivos</a></li>
-                    <li>> <a href="#">Meus Arquivos</a></li>
-                    <li>> Last Folder</li>
+                    <li>
                 </ol>
                 <input type="text">
             </div>
         </div>
-        <%- include('./parts/header'); %>
+        <%- include('./parts/sidebar'); %>
     </header>
     <main>
         <section class="content">
@@ -246,20 +244,18 @@
         </div>
     </aside>
 </body>
-<script src="/public/env.js"></script>
+<script src="/public/js/env.js"></script>
 <script src="/public/js/dao.js"></script>
+<script src="/public/js/utils/fetch.js"></script>
 <script src="/public/js/model/user.js"></script>
 <script src="/public/js/view/main.view.js"></script>
 <script src="/public/js/controller/main.controller.js"></script>
 
 <script defer type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js'
-    import { getDatabase, ref, set, child, push, onValue } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js'
+    import { getDatabase, ref, set, child, push, onValue, off } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js'
     import { getStorage, ref as refStorage, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js'
 
-    //const { getDatabase, ref, set } = "firebase/database";
-    //f.addObject(ref, 'database')
-    //console.log(f)
     const app = initializeApp(firebaseConfig);
     const realtimeDatabase = {
         instance: getDatabase(app),
@@ -267,16 +263,10 @@
         set,
         onValue
     }
-    //console.log(database)
-    //const dao = new DAO({ database, ref, set, child, push, onValue })
-    const controller = new Controller(new View(), new User(), { getStorage, refStorage, uploadBytesResumable, getDownloadURL }, realtimeDatabase)
+    
+    const firebaseObjects = { getStorage, refStorage, uploadBytesResumable, getDownloadURL }
 
-    //const model = new User()
-    //console.log(model)
-    //dao.save(model)
-    //dao.read()
-    //dao.save(model)
-    //dao.save(model)
+    const controller = new Controller(new View(), new User(), firebaseObjects, realtimeDatabase)
 </script>
 
 </html>

@@ -113,5 +113,62 @@ module.exports = {
             })
         }
         
+    },
+
+    async deleteFile(req, res){
+        try {
+            const { id } = req.params
+            const { key, type } = req.body 
+
+            const query = await firebase.findOne(`users/${id}/files`)
+            const files = Object.values(query)
+            const filesKeys = Object.keys(query)
+
+            console.log(files)
+
+            if (type === 'folder') {
+                const tasks = files.map((file, index) => {
+                    return new Promise(async function (resolve, reject){
+                        let folderParent = file.folderParent.split('/')
+
+                        const result = folderParent.find(parent => {
+                            return parent === key
+                        })
+
+                        if (result){
+                            const filename = file.date + file.name
+                            console.log(filename)
+                            await firebase.deleteStorageFile(filename)
+                            await firebase.deleteOne(`users/${id}/files/${filesKeys[index]}`)
+                        }
+
+                        resolve()
+                    })
+                })
+
+                await Promise.all(tasks)
+
+            }else {
+                const { date, name} = req.body
+
+                const filename = '/' + date + name
+                await firebase.deleteStorageFile(filename)
+            }
+
+            await firebase.deleteOne(`users/${id}/files/${key}`)
+
+            res.status(201).json({
+                status: 201,
+                deletedFile: true
+            })
+
+        }catch(error){
+            console.error(error)
+            res.status(500).json({
+                status: 500,
+                deletedFile: false,
+            })
+        }
     }
+
 }

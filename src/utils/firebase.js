@@ -1,6 +1,7 @@
 require('dotenv').config()
 const { initializeApp } = require('firebase/app')
 const realtimeDatabase = require('firebase/database')
+const storage = require('firebase/storage')
 
 class Firebase {
     constructor() {
@@ -53,7 +54,7 @@ class Firebase {
             return result || "Data Update Success"
 
         } catch (error) {
-            return error
+            throw error
         }
     }
 
@@ -94,6 +95,33 @@ class Firebase {
             return user
     
         } catch (error) {
+            throw error
+        }
+    }
+
+    async deleteOne(path){
+        try {
+            console.log('deletando')
+            const { remove } = realtimeDatabase
+            const database = realtimeDatabase.getDatabase(this.app)
+            const ref = realtimeDatabase.ref(database, path)
+
+            await remove(ref)
+
+            return true
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async deleteStorageFile(filename){
+        try {
+            console.log(filename)
+            const ref = storage.ref(storage.getStorage(), filename)
+            const result = await storage.deleteObject(ref)
+            console.log('Arquivo deletado')
+            console.log(result)
+        }catch(error){
             throw error
         }
     }

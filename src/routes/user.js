@@ -14,4 +14,6 @@ router.post('/user/:id', controller.upload)
 
 router.put('/user/:id/files/:fileId', controller.editFile)
 
+router.delete('/user/:id/files', controller.deleteFile)
+
 module.exports = router

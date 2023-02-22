@@ -9,26 +9,28 @@ class Controller {
         this.initEvents()
     }
 
-    initEvents() {
+    async initEvents() {
         this.loadPreferences()
         this.loadFiles()
 
-        this._view.bindNewFolderButton(this.handleFolderModal)
+        this._view.bindChangeFiles(this.handleChangeFiles)
+        this._view.bindClearSelect(this.handleClearSelect)
         this._view.bindDarkMode(this.handleDarkMode)
-        this._view.bindUploadFile(this.handleUploadFile)
+        this._view.bindEditFiles(this.handleEditModal)
         this._view.bindFileInput(this.handleInputChange)
         this._view.bindLogout(this.handleLogout)
-        this._view.bindCreateFolder(this.handleCreateFolder)
-        this._view.bindClearSelect(this.handleClearSelect)
-        this._view.bindChangeFiles(this.handleChangeFiles)
-        this._view.bindEditFiles(this.handleEditModal)
+        this._view.bindNewFolderButton(this.handleFolderModal)
+        this._view.bindSubmitFolder(this.handleSubmitFolder)
+        this._view.bindUploadFile(this.handleUploadFile)
+        this._view.bindDeleteFiles(this.handleDeleteFiles)
+        this._view.bindCancelModal(this.handleCancelModal)
     }
 
     loadPreferences = () => {
         const storage = localStorage.getItem('my-box') || ''
+        const body = this._view.getElement('body')
 
         if (storage === 'dark-mode') {
-            const body = this._view.getElement('body')
             body.classList.add(storage)
         }
 
@@ -38,133 +40,120 @@ class Controller {
         }
     }
 
-    loadFiles = async () => {
-        const id = this._view.getElement('#uniqueID').dataset.id
-        const filesBox = this._view.getElement('section.content')
-        filesBox.innerHTML = ''
-
-        try {
-            const { instance } = this._database
-            const filesReference = this._database.ref(instance, `users/${id}/files`)
-            const usedStorageReference = this._database.ref(instance, `users/${id}/usedStorage`)
-
-            this._database.onValue(filesReference, snapshot => {
-                const data = snapshot.val()
-
-                if (data) {
-                    const files = Object.values(data)
-                    const keys = Object.keys(data)
-                    //filesBox.innerHTML = ''
-
-                    files.forEach((file, index) => {
-                        console.log(files)
-                        console.log(keys)
-                        const newFile = this._view.createFile({ ...file, key: keys[index] })
-                        filesBox.appendChild(newFile)
-                    })
-
-                    this._view.bindSelectFiles(this.handleSelectFiles)
-                }
-            })
-
-            this._database.onValue(usedStorageReference, snapshot => {
-                const data = snapshot.val()
-
-                if (data) {
-                    const storage = this._view.getElement('.storage span')
-                    const progress = this._view.getElement('.progress')
-
-                    let totalStorage = storage.innerHTML.split('/')[1]
-                    const usedStorage = (data / (1024 * 1024)).toFixed(3)
-
-                    storage.innerHTML = `${usedStorage}/${totalStorage}`
-
-                    progress.style.width = `${(usedStorage / totalStorage) * 100}%`
-
-                }
-            })
-        } catch (error) {
-            console.log(error)
-            throw error
-        }
-    }
-
-    handleClearSelect = (event) => {
+    handleOpenFiles = (element, event) => {
+        const userId = this._view.getElement('#uniqueID').dataset.id;
+        const filesContainer = this._view.getElement('section.content');
         const selectedFiles = this._view.getAllElements('.item.selected')
-        if (!selectedFiles || selectedFiles.length < 1) return
-        if (event.currentTarget !== event.target) return
+        //this._clearFilesContainer(filesContainer);
 
-        [...selectedFiles].forEach((element) => {
-            console.log(element)
-            element.classList.remove('selected')
-        })
+        console.log(element)
+        const { instance } = this._database;
+        const type = element.dataset.type
 
-        const files = this._view.contentArea
-        files.dispatchEvent(new Event('changeFiles'))
+        if (type === 'folder') {
+            this._model.keyList.push(element.dataset.file)
+            this._model.folderList.push(element.dataset.name)
+
+            const filesRef = this._database.ref(instance, `users/${userId}/files/`)
+            this._openFolder(filesRef, filesContainer);
+
+            this.handleChangeFiles()
+        }else{
+            window.open(element.dataset.url)
+        }
     }
 
-    handleInputChange = async () => {
-        const inputFile = this._view.getElement('#upload-input')
-        const files = inputFile.files
-
-        const storageInstance = this._storage.getStorage()
-
-        const promises = [...files].map(file => {
-            return new Promise((resolve, reject) => {
-                const fileRef = this._storage.refStorage(storageInstance, 'aaa/' + file.name)
-                const uploadTask = this._storage.uploadBytesResumable(fileRef, file)
-
-                const upload = snapshot => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    //console.log(snapshot.totalBytes)
-                    this._view.renderUploadProgress({ name: file.name, progress })
-                }
-
-                const completeUpload = async () => {
-                    try {
-
-                        const url = await this._storage.getDownloadURL(uploadTask.snapshot.ref)
-
-                        const body = {
-                            name: file.name,
-                            size: file.size,
-                            type: file.type || file.name.split('.')[1],
-                            date: Date.now(),
-                            downloadURL: url
-                        }
-
-                        const id = this._view.getElement('#uniqueID').dataset.id
-
-                        const response = await fetch(`/user/${id}`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(body)
-                        })
-                        const json = await response.json()
-
-                        /*if (json.token && json.token !== '') {
-                            localStorage.setItem('mybox-token', json.token)
-                            localStorage.setItem('mybox-id', json.id)
-                            //window.location.assign('main.html')
-                        }*/
-                    } catch (error) {
-                        throw error
-                    }
-                }
-
-                uploadTask.on('state_changed', upload, null, completeUpload)
-                resolve()
-            })
-        })
-
+    async loadFiles() {
         try {
-            const result = await Promise.all(promises)
+            const userId = this._view.getElement('#uniqueID').dataset.id;
+            const filesContainer = this._view.getElement('section.content');
+            this._clearFilesContainer(filesContainer);
+
+            const { instance } = this._database;
+            const filesRef = this._database.ref(instance, `users/${userId}/files`);
+            const usedStorageRef = this._database.ref(instance, `users/${userId}/usedStorage`);
+
+            this._openFolder(filesRef, filesContainer);
+            this._updateStorage(usedStorageRef);
         } catch (error) {
+            alert('Não foi possível carregar os arquivos.');
             throw error
         }
+    }
 
+    _openFolder(filesRef, filesContainer) {
+        if (this._model.folderList.length === 0){
+            const root = this._view.getElement('#root-folder').innerHTML
+            this._model.folderList.push(root)
+        }
+
+        const folder = this._database.onValue(filesRef, snapshot => {
+            const filesData = snapshot.val();
+
+            if (filesData) {
+                const files = Object.values(filesData);
+                const keys = Object.keys(filesData);
+                this._clearFilesContainer(filesContainer);
+                files.forEach((file, index) => {
+                    if (this._model.keyList.join('/') === file.folderParent) {
+                        const newFile = this._view.createFile({ ...file, key: keys[index] });
+                        filesContainer.appendChild(newFile);
+                    }
+                });
+
+                this._view.bindSelectFiles(this.handleSelectFiles);
+                this._view.bindOpenFiles(this.handleOpenFiles);
+                this._view.updateFolderList(this._model.folderList)
+                this._view.bindFolderList(this.handleFolderList)
+
+            }else filesContainer.innerHTML = ''
+        })
+
+        this._model.currentFolder = folder
+    }
+
+    handleFolderList = (element, event) => {
+        const userId = this._view.getElement('#uniqueID').dataset.id;
+        const filesContainer = this._view.getElement('section.content');
+        const { instance } = this._database;
+
+        const index = this._model.folderList.indexOf(element.innerHTML)
+        const count = this._model.folderList.length - (index + 1)
+
+        console.log('Index: ', index)
+        console.log('Count: ', count)
+        console.log('Index + 1: ', (index + 1))
+
+        console.log(this._model.folderList)
+        console.log(this._model.keyList)
+        
+        this._model.folderList.splice((index + 1), count)
+        this._model.keyList.splice((index), count)
+
+        const filesRef = this._database.ref(instance, `users/${userId}/files/`)
+        this._openFolder(filesRef, filesContainer)
+    }
+
+    _updateStorage(usedStorageRef) {
+        this._database.onValue(usedStorageRef, snapshot => {
+            const usedStorageData = snapshot.val();
+
+            if (usedStorageData) {
+                const storage = this._view.getElement('.storage span');
+                const progress = this._view.getElement('.progress');
+
+                const totalStorage = storage.innerHTML.split('/')[1];
+                const usedStorage = (usedStorageData / (1024 * 1024)).toFixed(3);
+
+                storage.innerHTML = `${usedStorage}/${totalStorage}`;
+                progress.style.width = `${(usedStorage / totalStorage) * 100}%`;
+            }
+        });
+    }
+
+
+    _clearFilesContainer = (container) => {
+        container.innerHTML = ''
     }
 
     handleChangeFiles = () => {
@@ -176,7 +165,7 @@ class Controller {
         const editBtn = this._view.getElement('#edit-item')
         const deleteBtn = this._view.getElement('#delete-item')
 
-       switch(selectedFiles.length){
+        switch (selectedFiles.length) {
             case 0:
                 editBtn.classList.add('disabled')
                 deleteBtn.classList.add('disabled')
@@ -188,61 +177,121 @@ class Controller {
             default:
                 editBtn.classList.add('disabled')
                 deleteBtn.classList.remove('disabled')
-                
-       }
+
+        }
     }
 
-    handleCreateFolder = async () => {
-        const element = this._view.getElement('#new-folder-input')
+    handleClearSelect = (event) => {
+        const selectedFiles = this._view.getAllElements('.item.selected')
+        if (!selectedFiles || selectedFiles.length < 1) return
+        if (event.currentTarget !== event.target) return
+
+        [...selectedFiles].forEach((element) => {
+            element.classList.remove('selected')
+        })
+
+        const files = this._view.contentArea
+        files.dispatchEvent(new Event('changeFiles'))
+    }
+
+    handleDeleteFiles = async (event) => {  
+        const userId = this._view.getElement('#uniqueID').dataset.id;
+
+        const selectedFiles = [...this._view.files].filter(file => {
+            const hasClass = file.classList.contains('selected')
+            if (hasClass) return true
+        })
+        
+
+        const tasks = selectedFiles.map(item => {
+            return new Promise(async (resolve, reject) => {
+                const body = {
+                    date: item.dataset.date,
+                    name: item.dataset.name,
+                    key: item.dataset.file,
+                    type: item.dataset.type
+                }
+
+                //console.log(body)
+                const response = await Fetch.delete(`/user/${userId}/files`, body)
+                const json = await response.json()
+                console.log(json)
+
+                resolve(json)
+            })
+        })
+
+        const result = await Promise.all(tasks)
+        console.log(result)
+        //this._model.currentFolder
+        
+    }
+
+    handleSubmitFolder = async () => {
+        const input = this._view.getElement('#new-folder-input')
         const modal = this._view.getElement('.new-folder-wraper')
-
-        //console.log(element)
-
-        const body = {
-            name: this._view.getElement('#new-folder-input').value,
-            type: 'folder'
-        }
-
         const id = this._view.getElement('#uniqueID').dataset.id
 
-        if (!modal.classList.contains('edit')){
-            try {
-                const response = await fetch(`/user/${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                })
-
-                const json = await response.json()
-            } catch (error) {
-                throw error
-            }
-        }else{
-            const folderSelected = this._view.getElement('.item.selected')
-            const folderId = folderSelected.dataset.file
-            console.log(folderId)
-
-            
-            try {
-                const response = await fetch(`/user/${id}/files/${folderId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name: this._view.getElement('#new-folder-input').value
-                    })
-                })
-
-                const json = await response.json()
-            } catch (error) {
-                throw error
-            }
+        const body = {
+            name: input.value,
+            type: 'folder',
+            folderParent: this._model.keyList.join('/')
         }
 
-        
+        let url, method, folderId
+
+        if (!modal.classList.contains('edit')) {
+            url = `/user/${id}`
+            method = 'post'
+        } else {
+            const folderSelected = this._view.getElement('.item.selected')
+            folderId = folderSelected.dataset.file
+
+            url = `/user/${id}/files/${folderId}`
+            method = 'put'
+            body.name = input.value
+        }
+
+        try {
+            const response = await Fetch[method](url, body)
+            const json = await response.json()
+            modal.style.display = 'none'
+            input.value = ''
+        } catch (error) {
+            alert('Ocorreu um erro ao criar a pasta. Por favor, tente novamente.')
+        }
+    }
+
+    handleDarkMode = () => {
+        let storage = localStorage.getItem('my-box') || ''
+        storage = (storage === 'dark-mode') ? '' : 'dark-mode'
+
+        const body = this._view.getElement('body')
+        if (!body) return
+
+        localStorage.setItem('my-box', storage)
+
+        if (storage === 'dark-mode') {
+            body.classList.add('dark-mode')
+        } else {
+            body.classList.remove('dark-mode')
+        }
+    }
+
+    handleCancelModal = (event) => {
+        const modal = this._view.getElement('.new-folder-wraper')
+        console.log(modal)
+
+        const keydownCondition = (event.type === 'keydown' && event.keyCode === 27)
+        const clickCondition = (event.type === 'click' && event.target.class === modal.class)
+
+        if (event.type === 'click' || keydownCondition){
+            const input = this._view.getElement('#new-folder-input')
+            
+            modal.style.display = 'none'
+            input.value = ''
+            console.log(event)
+        }
     }
 
     handleEditModal = () => {
@@ -251,29 +300,86 @@ class Controller {
 
         modal.classList.add('edit')
         elementDescription.innerHTML = 'Novo Nome: '
-        modal.style.display = 'block';
+        modal.style.display = 'block'
     }
 
     handleFolderModal = () => {
-
-        modal.classList.remove('edit')
         const modal = this._view.getElement('.new-folder-wraper')
         const elementDescription = this._view.getElement('.new-folder-box span')
 
+        modal.classList.remove('edit')
         elementDescription.innerHTML = 'Nova Pasta: '
-        modal.style.display = 'block';
+        modal.style.display = 'block'
+    }
+
+    handleInputChange = async () => {
+        const inputFile = this._view.getElement("#upload-input")
+        const files = inputFile.files
+
+        const storageInstance = this._storage.getStorage()
+
+        const promises = [...files].map((file) => {
+
+            return new Promise((resolve, reject) => {
+                const fileRef = this._storage.refStorage(
+                    storageInstance,
+                    "/" + Date.now() + file.name
+                )
+
+                const uploadTask = this._storage.uploadBytesResumable(fileRef, file)
+
+                const upload = (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    this._view.renderUploadProgress({
+                        name: file.name,
+                        progress,
+                    })
+                }
+
+                const completeUpload = async () => {
+                    try {
+                        const url = await this._storage.getDownloadURL(
+                            uploadTask.snapshot.ref
+                        )
+
+                        const body = {
+                            name: file.name,
+                            size: file.size,
+                            type: file.type || file.name.split(".")[1],
+                            date: Date.now(),
+                            downloadURL: url,
+                            folderParent: this._model.keyList.join('/')
+                        }
+
+                        const id = this._view.getElement("#uniqueID").dataset.id
+
+                        const response = await Fetch.post(`/user/${id}`, body)
+                        const json = await response.json()
+                    } catch (error) {
+                        alert("Ocorreu um erro ao enviar o arquivo. Por favor, tente novamente.")
+                    }
+                }
+
+                uploadTask.on("state_changed", upload, null, completeUpload)
+                resolve()
+            })
+        })
+
+        try {
+            const result = await Promise.all(promises)
+        } catch (error) {
+            console.error(error)
+            alert("Ocorreu um erro ao enviar o arquivo. Por favor, tente novamente.")
+        }
+
     }
 
     handleLogout = async () => {
         try {
 
-            const response = await fetch('/logout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            const response = await Fetch.post('/logout', {})
             const json = await response.json()
+
             if (json.logout) {
                 alert(json.logout)
                 window.location.assign('/login')
@@ -335,24 +441,7 @@ class Controller {
         method()
         const files = this._view.contentArea
         files.dispatchEvent(new Event('changeFiles'))
-	
-    }
 
-    handleDarkMode = () => {
-        let storage = localStorage.getItem('my-box') || ''
-        storage = (storage === 'dark-mode') ? '' : 'dark-mode'
-        //if (storage !== 'dark-mode' && storage)
-
-        const body = this._view.getElement('body')
-        if (!body) return
-
-        localStorage.setItem('my-box', storage)
-
-        if (storage === 'dark-mode') {
-            body.classList.add('dark-mode')
-        } else {
-            body.classList.remove('dark-mode')
-        }
     }
 
     handleUploadFile = () => {
