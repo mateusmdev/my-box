@@ -16,9 +16,9 @@ class View {
         this.body = this.getElement('body')
     }
 
-    _addEvent(element, action, handler) {
+    _addEvent(element, action, handler, prevent=true) {
         element.addEventListener(action, event => {
-            event.preventDefault()
+            if (prevent) event.preventDefault()
             handler(event)
         }, false)
     }
@@ -116,7 +116,7 @@ class View {
     }
 
     bindCancelModal(handler) {
-        this._addEvent(this.body, 'keydown', handler)
+        this._addEvent(this.body, 'keydown', handler, false)
         this._addEvent(this.modal, 'click', handler)
     }
 
@@ -159,6 +159,7 @@ class View {
     }
 
     _fileType(mimetype) {
+        console.log(mimetype)
         const icons = {
             'text/x-csrc': 'fa-sharp fa-solid fa-c',
             'text/css': 'fa-brands fa-css3-alt',
@@ -169,7 +170,7 @@ class View {
             'application/x-javascript': 'fa-brands fa-square-js',
             'image/jpeg': 'fa-solid fa-image',
             'audio/mpeg': 'fa-solid fa-file-audio',
-            //mp4: '',
+            'video/mp4': 'fa-solid fa-file-video',
             'application/pdf': 'fa-solid fa-file-pdf',
             'application/x-php': 'fa-brands fa-php',
             'text/x-python': 'fa-brands fa-python',
@@ -185,8 +186,9 @@ class View {
     }
 
     createFile(data) {
+        console.log(data)
         const attr = (data.type !== 'folder') ? `data-url="${data.downloadURL}"` : ''
-        const html = `<div class="item" data-file="${data.key}" data-type="${data.type}" data-name="${data.name}" ${attr} data-date="${data.date}">
+        const html = `<div class="item" data-file="${data.key}" data-type="${data.type}" data-name="${data.name}" ${attr} data-originalname="${data.originalName}">
             <div class="folder">
                 <i class="${this._fileType(data.type)}"></i>
                 <span>${data.name}</span>

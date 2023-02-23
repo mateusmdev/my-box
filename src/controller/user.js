@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const { generateToken } = require('../utils/jwtToken')
 const firebase = require('../utils/firebase')
+const { reject } = require('bcrypt/promises')
 
 module.exports = {
     async authentication(req, res) {
@@ -25,9 +26,9 @@ module.exports = {
 
                 req.session.user = token
                 res.status(302).redirect('/main')
-            }else{
+            } else {
                 res.status(302).redirect('/login')
-            }  
+            }
 
         } catch (error) {
             throw error
@@ -70,7 +71,7 @@ module.exports = {
 
         } catch (error) {
             res.status(500).json({
-                status:500,
+                status: 500,
                 message: 'Server error.'
             })
         }
@@ -85,18 +86,18 @@ module.exports = {
             await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, bytes + req.body.size)
 
             res.status(201).json({
-                status:201,
+                status: 201,
                 upload: true
             })
         } catch (error) {
             res.status(500).json({
-                status:500,
+                status: 500,
                 upload: false
             })
         }
     },
 
-    async editFile(req, res){
+    async editFile(req, res) {
         try {
             const { id, fileId } = req.params
             const file = await firebase.findOne(`users/${id}/files/${fileId}`)
@@ -106,63 +107,79 @@ module.exports = {
                 status: 201,
                 editedFile: true
             })
-        }catch(error){
+        } catch (error) {
             res.status(500).json({
                 status: 500,
                 editedFile: false,
             })
         }
-        
+
     },
 
-    async deleteFile(req, res){
+    async deleteFile(req, res) {
         try {
             const { id } = req.params
-            const { key, type } = req.body 
+            const { key, type } = req.body
 
             const query = await firebase.findOne(`users/${id}/files`)
             const files = Object.values(query)
             const filesKeys = Object.keys(query)
 
-            console.log(files)
-
             if (type === 'folder') {
-                const tasks = files.map((file, index) => {
-                    return new Promise(async function (resolve, reject){
-                        let folderParent = file.folderParent.split('/')
+                const tasks = files.map(async (file, index) => {
+                    let size = 0;
+                    let folderParent = file.folderParent.split('/')
+                    const result = folderParent.find(parent => {
+                        return parent === key;
+                    })
 
-                        const result = folderParent.find(parent => {
-                            return parent === key
-                        })
-
-                        if (result){
-                            const filename = file.date + file.name
-                            console.log(filename)
-                            await firebase.deleteStorageFile(filename)
-                            await firebase.deleteOne(`users/${id}/files/${filesKeys[index]}`)
+                    if (result) {
+                        if (file.type !== 'folder') {
+                            size = file.size;
+                            await firebase.deleteStorageFile(file.originalName)
                         }
 
-                        resolve()
+                        await firebase.deleteOne(`users/${id}/files/${filesKeys[index]}`)
+                    }
+
+                    return size;
+                });
+
+                const result = await Promise.all(tasks)
+
+                const tasksStorage = result.map(async size => {
+                    return new Promise(async (resolve, reject) => {
+                        const bytes = await firebase.findOne(`users/${id}/usedStorage`)
+                        await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, bytes - size)
+                        resolve(bytes)
                     })
-                })
+                });
 
-                await Promise.all(tasks)
+                await Promise.all(tasksStorage)
+            } else {
+                const { originalName } = req.body
 
-            }else {
-                const { date, name} = req.body
+                await firebase.deleteStorageFile(originalName)
 
-                const filename = '/' + date + name
-                await firebase.deleteStorageFile(filename)
+                const file = await firebase.findOne(`users/${id}/files/${key}`)
+                const bytes = await firebase.findOne(`users/${id}/usedStorage`)
+
+                await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, bytes - file.size);
             }
 
             await firebase.deleteOne(`users/${id}/files/${key}`)
+            const bytes = await firebase.findOne(`users/${id}/usedStorage`)
+
+            if (bytes < 0) {
+                await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, 0)
+            }
 
             res.status(201).json({
                 status: 201,
                 deletedFile: true
             })
 
-        }catch(error){
+        } catch (error) {
             console.error(error)
             res.status(500).json({
                 status: 500,
@@ -170,5 +187,4 @@ module.exports = {
             })
         }
     }
-
 }

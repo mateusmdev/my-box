@@ -205,9 +205,9 @@ class Controller {
 
         const tasks = selectedFiles.map(item => {
             return new Promise(async (resolve, reject) => {
+                console.log(item)
                 const body = {
-                    date: item.dataset.date,
-                    name: item.dataset.name,
+                    originalName: item.dataset.originalname,
                     key: item.dataset.file,
                     type: item.dataset.type
                 }
@@ -280,17 +280,17 @@ class Controller {
 
     handleCancelModal = (event) => {
         const modal = this._view.getElement('.new-folder-wraper')
-        console.log(modal)
 
         const keydownCondition = (event.type === 'keydown' && event.keyCode === 27)
-        const clickCondition = (event.type === 'click' && event.target.class === modal.class)
+        const clickCondition = (event.type === 'click' && event.currentTarget === event.target)
 
-        if (event.type === 'click' || keydownCondition){
+        console.log(event)
+
+        if (clickCondition || keydownCondition){
             const input = this._view.getElement('#new-folder-input')
             
             modal.style.display = 'none'
             input.value = ''
-            console.log(event)
         }
     }
 
@@ -321,9 +321,12 @@ class Controller {
         const promises = [...files].map((file) => {
 
             return new Promise((resolve, reject) => {
+                const now = Date.now()
+                const originalName = "/" + now + file.name
+
                 const fileRef = this._storage.refStorage(
                     storageInstance,
-                    "/" + Date.now() + file.name
+                    originalName
                 )
 
                 const uploadTask = this._storage.uploadBytesResumable(fileRef, file)
@@ -343,10 +346,11 @@ class Controller {
                         )
 
                         const body = {
+                            originalName: originalName,
                             name: file.name,
                             size: file.size,
                             type: file.type || file.name.split(".")[1],
-                            date: Date.now(),
+                            date: now,
                             downloadURL: url,
                             folderParent: this._model.keyList.join('/')
                         }

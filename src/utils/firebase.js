@@ -101,7 +101,6 @@ class Firebase {
 
     async deleteOne(path){
         try {
-            console.log('deletando')
             const { remove } = realtimeDatabase
             const database = realtimeDatabase.getDatabase(this.app)
             const ref = realtimeDatabase.ref(database, path)
@@ -120,7 +119,7 @@ class Firebase {
             const ref = storage.ref(storage.getStorage(), filename)
             const result = await storage.deleteObject(ref)
             console.log('Arquivo deletado')
-            console.log(result)
+            
         }catch(error){
             throw error
         }
