@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt')
 const { generateToken } = require('../utils/jwtToken')
 const firebase = require('../utils/firebase')
-const { reject } = require('bcrypt/promises')
 
 module.exports = {
     async authentication(req, res) {
@@ -81,14 +80,30 @@ module.exports = {
     async upload(req, res) {
         try {
             const { id } = req.params
-            await firebase.saveRealtimeDatabase(`/users/${id}/files`, req.body)
+            const total = await firebase.findOne(`users/${id}/totalStorage`)
             const bytes = await firebase.findOne(`users/${id}/usedStorage`)
-            await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, bytes + req.body.size)
 
-            res.status(201).json({
-                status: 201,
+            const updatedBytes = (bytes + req.body.size)
+
+            if (updatedBytes < total) {
+                await firebase.saveRealtimeDatabase(`/users/${id}/files`, req.body)
+                await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, updatedBytes)
+
+                res.status(201).json({
+                    status: 201,
+                    upload: true
+                })
+            }
+
+            const { originalName } = req.body
+            console.log(originalName)
+            await firebase.deleteStorageFile(originalName)
+
+            res.status(403).json({
+                status: 403,
                 upload: true
             })
+
         } catch (error) {
             res.status(500).json({
                 status: 500,
@@ -118,6 +133,7 @@ module.exports = {
 
     async deleteFile(req, res) {
         try {
+
             const { id } = req.params
             const { key, type } = req.body
 
@@ -126,36 +142,35 @@ module.exports = {
             const filesKeys = Object.keys(query)
 
             if (type === 'folder') {
-                const tasks = files.map(async (file, index) => {
-                    let size = 0;
-                    let folderParent = file.folderParent.split('/')
-                    const result = folderParent.find(parent => {
-                        return parent === key;
-                    })
+                const tasks = files.map((file, index) => {
+                    return new Promise(async function (resolve, reject) {
+                        let size = 0;
+                        let folderParent = file.folderParent.split('/')
+                        const result = folderParent.find(parent => {
+                            return parent === key;
+                        })
 
-                    if (result) {
-                        if (file.type !== 'folder') {
-                            size = file.size;
-                            await firebase.deleteStorageFile(file.originalName)
+                        if (result) {
+                            if (file.type !== 'folder') {
+                                size = file.size;
+                                await firebase.deleteStorageFile(file.originalName)
+                            }
+
+                            await firebase.deleteOne(`users/${id}/files/${filesKeys[index]}`)
                         }
 
-                        await firebase.deleteOne(`users/${id}/files/${filesKeys[index]}`)
-                    }
-
-                    return size;
+                        resolve(size)
+                    })
                 });
 
                 const result = await Promise.all(tasks)
 
-                const tasksStorage = result.map(async size => {
-                    return new Promise(async (resolve, reject) => {
-                        const bytes = await firebase.findOne(`users/${id}/usedStorage`)
-                        await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, bytes - size)
-                        resolve(bytes)
-                    })
-                });
+                const totalSize = result.reduce((acc, curr) => acc + curr, 0);
 
-                await Promise.all(tasksStorage)
+                const bytes = await firebase.findOne(`users/${id}/usedStorage`)
+                await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, bytes - totalSize)
+
+
             } else {
                 const { originalName } = req.body
 

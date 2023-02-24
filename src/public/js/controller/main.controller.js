@@ -44,9 +44,7 @@ class Controller {
         const userId = this._view.getElement('#uniqueID').dataset.id;
         const filesContainer = this._view.getElement('section.content');
         const selectedFiles = this._view.getAllElements('.item.selected')
-        //this._clearFilesContainer(filesContainer);
 
-        console.log(element)
         const { instance } = this._database;
         const type = element.dataset.type
 
@@ -58,7 +56,7 @@ class Controller {
             this._openFolder(filesRef, filesContainer);
 
             this.handleChangeFiles()
-        }else{
+        } else {
             window.open(element.dataset.url)
         }
     }
@@ -82,7 +80,7 @@ class Controller {
     }
 
     _openFolder(filesRef, filesContainer) {
-        if (this._model.folderList.length === 0){
+        if (this._model.folderList.length === 0) {
             const root = this._view.getElement('#root-folder').innerHTML
             this._model.folderList.push(root)
         }
@@ -106,7 +104,7 @@ class Controller {
                 this._view.updateFolderList(this._model.folderList)
                 this._view.bindFolderList(this.handleFolderList)
 
-            }else filesContainer.innerHTML = ''
+            } else filesContainer.innerHTML = ''
         })
 
         this._model.currentFolder = folder
@@ -120,13 +118,6 @@ class Controller {
         const index = this._model.folderList.indexOf(element.innerHTML)
         const count = this._model.folderList.length - (index + 1)
 
-        console.log('Index: ', index)
-        console.log('Count: ', count)
-        console.log('Index + 1: ', (index + 1))
-
-        console.log(this._model.folderList)
-        console.log(this._model.keyList)
-        
         this._model.folderList.splice((index + 1), count)
         this._model.keyList.splice((index), count)
 
@@ -194,37 +185,42 @@ class Controller {
         files.dispatchEvent(new Event('changeFiles'))
     }
 
-    handleDeleteFiles = async (event) => {  
-        const userId = this._view.getElement('#uniqueID').dataset.id;
-
-        const selectedFiles = [...this._view.files].filter(file => {
-            const hasClass = file.classList.contains('selected')
-            if (hasClass) return true
-        })
-        
-
-        const tasks = selectedFiles.map(item => {
-            return new Promise(async (resolve, reject) => {
-                console.log(item)
-                const body = {
-                    originalName: item.dataset.originalname,
-                    key: item.dataset.file,
-                    type: item.dataset.type
-                }
-
-                //console.log(body)
-                const response = await Fetch.delete(`/user/${userId}/files`, body)
-                const json = await response.json()
-                console.log(json)
-
-                resolve(json)
+    handleDeleteFiles = async (event) => {
+        try {
+            const userId = this._view.getElement('#uniqueID').dataset.id;
+            const selectedFiles = [...this._view.files].filter(file => {
+                const hasClass = file.classList.contains('selected')
+                if (hasClass) return true
             })
-        })
 
-        const result = await Promise.all(tasks)
-        console.log(result)
-        //this._model.currentFolder
-        
+            const tasks = selectedFiles.map(item => {
+                return new Promise(async (resolve, reject) => {
+                    const body = {
+                        originalName: item.dataset.originalname,
+                        key: item.dataset.file,
+                        type: item.dataset.type
+                    }
+
+                    try {
+                        const response = await Fetch.delete(`/user/${userId}/files`, body)
+                        const json = await response.json()
+
+                        if (response.status !== 201) {
+                            throw new Error(`Failed to delete file: ${json.message}`)
+                        }
+
+                        resolve(json)
+                    } catch (error) {
+                        reject(error)
+                    }
+                })
+            })
+
+            await Promise.all(tasks)
+        } catch (error) {
+            alert('Erro ao deletar arquivo')
+        }
+
     }
 
     handleSubmitFolder = async () => {
@@ -284,11 +280,9 @@ class Controller {
         const keydownCondition = (event.type === 'keydown' && event.keyCode === 27)
         const clickCondition = (event.type === 'click' && event.currentTarget === event.target)
 
-        console.log(event)
-
-        if (clickCondition || keydownCondition){
+        if (clickCondition || keydownCondition) {
             const input = this._view.getElement('#new-folder-input')
-            
+
             modal.style.display = 'none'
             input.value = ''
         }

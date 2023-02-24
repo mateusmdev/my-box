@@ -42,7 +42,7 @@ class Firebase {
             const database = realtimeDatabase.getDatabase(this.app)
             const ref = realtimeDatabase.ref(database)
 
-            if(!path || !obj){
+            if(!path || (obj == undefined)){
                 throw new Error("Missing parameters, please check path and obj parameters")
             }
 

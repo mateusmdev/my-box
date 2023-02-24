@@ -28,10 +28,10 @@ module.exports = {
 
                 else
                     res.status(302).redirect('/login')
-            }else{
+            } else {
                 res.status(302).redirect('/login')
             }
-            
+
         } catch (error) {
             console.log(error)
             throw error
