@@ -104,6 +104,8 @@ class Controller {
                 this._view.updateFolderList(this._model.folderList)
                 this._view.bindFolderList(this.handleFolderList)
 
+                this.handleChangeFiles()
+
             } else filesContainer.innerHTML = ''
         })
 
@@ -155,6 +157,11 @@ class Controller {
 
         const editBtn = this._view.getElement('#edit-item')
         const deleteBtn = this._view.getElement('#delete-item')
+        const content = this._view.getElement('section.content')
+
+
+        console.log(selectedFiles.length)
+        
 
         switch (selectedFiles.length) {
             case 0:
@@ -168,7 +175,11 @@ class Controller {
             default:
                 editBtn.classList.add('disabled')
                 deleteBtn.classList.remove('disabled')
+        }
 
+        if (content.innerHTML === ''){
+            editBtn.classList.add('disabled')
+            deleteBtn.classList.add('disabled')
         }
     }
 
@@ -206,7 +217,7 @@ class Controller {
                         const json = await response.json()
 
                         if (response.status !== 201) {
-                            throw new Error(`Failed to delete file: ${json.message}`)
+                            throw new Error(`Failed to delete file`)
                         }
 
                         resolve(json)
@@ -217,6 +228,7 @@ class Controller {
             })
 
             await Promise.all(tasks)
+            this.handleChangeFiles()
         } catch (error) {
             alert('Erro ao deletar arquivo')
         }
@@ -237,7 +249,7 @@ class Controller {
         let url, method, folderId
 
         if (!modal.classList.contains('edit')) {
-            url = `/user/${id}`
+            url = `/user/${id}/create`
             method = 'post'
         } else {
             const folderSelected = this._view.getElement('.item.selected')
@@ -353,6 +365,11 @@ class Controller {
 
                         const response = await Fetch.post(`/user/${id}`, body)
                         const json = await response.json()
+
+                        if (json.status === 403){
+                            alert('Você não tem espaço suficiente para fazer upload deste arquivo')
+                        }
+
                     } catch (error) {
                         alert("Ocorreu um erro ao enviar o arquivo. Por favor, tente novamente.")
                     }

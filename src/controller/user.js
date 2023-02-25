@@ -76,6 +76,23 @@ module.exports = {
         }
     },
 
+    async createFolder(req, res){
+    	try{
+    		const { id } = req.params
+    		await firebase.saveRealtimeDatabase(`/users/${id}/files`, req.body)
+
+    		return res.status(201).json({
+                status: 201,
+                upload: true
+            })
+
+    	}catch{
+			res.status(500).json({
+                status: 500,
+                upload: false
+            })
+    	}
+    },
 
     async upload(req, res) {
         try {
@@ -89,7 +106,9 @@ module.exports = {
                 await firebase.saveRealtimeDatabase(`/users/${id}/files`, req.body)
                 await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, updatedBytes)
 
-                res.status(201).json({
+                console.log('Upload')
+
+                return res.status(201).json({
                     status: 201,
                     upload: true
                 })
@@ -98,6 +117,8 @@ module.exports = {
             const { originalName } = req.body
             console.log(originalName)
             await firebase.deleteStorageFile(originalName)
+
+            console.log('Cheio')
 
             res.status(403).json({
                 status: 403,

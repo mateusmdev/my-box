@@ -12,6 +12,8 @@ router.post('/user/create', controller.create)
 
 router.post('/user/:id', controller.upload)
 
+router.post('/user/:id/create', controller.createFolder)
+
 router.put('/user/:id/files/:fileId', controller.editFile)
 
 router.delete('/user/:id/files', controller.deleteFile)
