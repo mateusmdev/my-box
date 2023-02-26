@@ -130,16 +130,21 @@ class Controller {
     _updateStorage(usedStorageRef) {
         this._database.onValue(usedStorageRef, snapshot => {
             const usedStorageData = snapshot.val();
+            const changeProgress = (usedStorageData != undefined && usedStorageData > -1)
+            const progress = this._view.getElement('.progress')
 
-            if (usedStorageData) {
-                const storage = this._view.getElement('.storage span');
-                const progress = this._view.getElement('.progress');
 
-                const totalStorage = storage.innerHTML.split('/')[1];
-                const usedStorage = (usedStorageData / (1024 * 1024)).toFixed(3);
-
+            if (changeProgress) {
+                const storage = this._view.getElement('.storage span')
+                const totalStorage = storage.innerHTML.split('/')[1]
+                let usedStorage = Math.abs((usedStorageData / (1024 * 1024)))
+                usedStorage = usedStorage === 0 ? usedStorage : usedStorage.toFixed(3)
+                usedStorage = parseFloat(usedStorage) >= 0.001 ? usedStorage : 0
+                
                 storage.innerHTML = `${usedStorage}/${totalStorage}`;
                 progress.style.width = `${(usedStorage / totalStorage) * 100}%`;
+            }else{
+                progress.style.width = '0%'
             }
         });
     }
@@ -197,6 +202,10 @@ class Controller {
     }
 
     handleDeleteFiles = async (event) => {
+        const deleteBtn = this._view.getElement('#delete-item')
+
+        if (deleteBtn.classList.contains('disabled')) return
+
         try {
             const userId = this._view.getElement('#uniqueID').dataset.id;
             const selectedFiles = [...this._view.files].filter(file => {
@@ -301,6 +310,10 @@ class Controller {
     }
 
     handleEditModal = () => {
+        const editBtn = this._view.getElement('#edit-item')
+
+        if (editBtn.classList.contains('disabled')) return
+
         const modal = this._view.getElement('.new-folder-wraper')
         const elementDescription = this._view.getElement('.new-folder-box span')
 

@@ -5,13 +5,16 @@ const firebase = require('../utils/firebase')
 module.exports = {
     async authentication(req, res) {
         try {
-            const user = await firebase.findOne('users', { email: req.body.email })
+            const { email, password } = req.body
 
-            if (!user) {
-                res.status(201).redirect('/login')
-            }
+            if (!email || !password) return res.status(201).redirect('/login')
+            
 
-            const compareResult = await bcrypt.compare(req.body.password, user.password)
+            const user = await firebase.findOne('users', { email: email })
+
+            if (!user) return res.status(201).redirect('/login')
+
+            const compareResult = await bcrypt.compare(password, user.password)
 
             if (compareResult) {
                 const token = generateToken({
