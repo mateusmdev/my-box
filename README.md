@@ -49,9 +49,9 @@ Um resumo do projeto:
 ## Screenshot
 
 <div>
-  <img width="33%" src="./img-readme/3.png" />
-  <img width="33%" src="./img-readme/4.png" />
-  <img width="33%"src="./img-readme/5.png" />
+  <img width="32.9%" src="./img-readme/3.png" />
+  <img width="32.9%" src="./img-readme/4.png" />
+  <img width="32.9%"src="./img-readme/5.png" />
 <div>
 
 ## Documentação
