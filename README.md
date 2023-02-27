@@ -48,7 +48,11 @@ Um resumo do projeto:
 
 ## Screenshot
 
-<img src="./img-readme/1.png" />
+<div>
+  <img width="33%" src="./img-readme/3.png" />
+  <img width="33%" src="./img-readme/4.png" />
+  <img width="33%"src="./img-readme/5.png" />
+<div>
 
 ## Documentação
 
@@ -57,6 +61,8 @@ Um resumo do projeto:
 Após clonar o repositório, faça os passos abaixo para os seguintes arquivos em seus respectivos diretorios:
   - ./env.example - Mude o nome do arquivo para .env
   - ./src/public/js/env.example.js - Mude o nome do arquivo para env.js
+  
+  <img src="./img-readme/1.png" /> <img src="./img-readme/2.png" />
   
   Abra os 2 arquivos ('.env' e 'env.js') e adicione em ambos as configurações para apontar para seu projeto firebase. Sem isso o projeto não vai    funcionar.
 
