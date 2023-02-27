@@ -5,7 +5,6 @@ class Controller {
         this._storage = storage
         this._database = database
 
-
         this.initEvents()
     }
 
@@ -41,11 +40,11 @@ class Controller {
     }
 
     handleOpenFiles = (element, event) => {
-        const userId = this._view.getElement('#uniqueID').dataset.id;
-        const filesContainer = this._view.getElement('section.content');
-        const selectedFiles = this._view.getAllElements('.item.selected')
+        const userId = this._view.getElement('#uniqueID').dataset.id
+        const filesContainer = this._view.getElement('section.content')
+        const selectedFiles = this._view.getElement('.item.selected', true)
 
-        const { instance } = this._database;
+        const { instance } = this._database
         const type = element.dataset.type
 
         if (type === 'folder') {
@@ -53,7 +52,7 @@ class Controller {
             this._model.folderList.push(element.dataset.name)
 
             const filesRef = this._database.ref(instance, `users/${userId}/files/`)
-            this._openFolder(filesRef, filesContainer);
+            this._openFolder(filesRef, filesContainer)
 
             this.handleChangeFiles()
         } else {
@@ -63,18 +62,18 @@ class Controller {
 
     async loadFiles() {
         try {
-            const userId = this._view.getElement('#uniqueID').dataset.id;
-            const filesContainer = this._view.getElement('section.content');
-            this._clearFilesContainer(filesContainer);
+            const userId = this._view.getElement('#uniqueID').dataset.id
+            const filesContainer = this._view.getElement('section.content')
+            this._clearFilesContainer(filesContainer)
 
-            const { instance } = this._database;
-            const filesRef = this._database.ref(instance, `users/${userId}/files`);
-            const usedStorageRef = this._database.ref(instance, `users/${userId}/usedStorage`);
+            const { instance } = this._database
+            const filesRef = this._database.ref(instance, `users/${userId}/files`)
+            const usedStorageRef = this._database.ref(instance, `users/${userId}/usedStorage`)
 
-            this._openFolder(filesRef, filesContainer);
-            this._updateStorage(usedStorageRef);
+            this._openFolder(filesRef, filesContainer)
+            this._updateStorage(usedStorageRef)
         } catch (error) {
-            alert('Não foi possível carregar os arquivos.');
+            alert('Não foi possível carregar os arquivos.')
             throw error
         }
     }
@@ -86,21 +85,21 @@ class Controller {
         }
 
         const folder = this._database.onValue(filesRef, snapshot => {
-            const filesData = snapshot.val();
+            const filesData = snapshot.val()
 
             if (filesData) {
-                const files = Object.values(filesData);
-                const keys = Object.keys(filesData);
-                this._clearFilesContainer(filesContainer);
+                const files = Object.values(filesData)
+                const keys = Object.keys(filesData)
+                this._clearFilesContainer(filesContainer)
                 files.forEach((file, index) => {
                     if (this._model.keyList.join('/') === file.folderParent) {
-                        const newFile = this._view.createFile({ ...file, key: keys[index] });
-                        filesContainer.appendChild(newFile);
+                        const newFile = this._view.createFile({ ...file, key: keys[index] })
+                        filesContainer.appendChild(newFile)
                     }
-                });
+                })
 
-                this._view.bindSelectFiles(this.handleSelectFiles);
-                this._view.bindOpenFiles(this.handleOpenFiles);
+                this._view.bindSelectFiles(this.handleSelectFiles)
+                this._view.bindOpenFiles(this.handleOpenFiles)
                 this._view.updateFolderList(this._model.folderList)
                 this._view.bindFolderList(this.handleFolderList)
 
@@ -113,9 +112,9 @@ class Controller {
     }
 
     handleFolderList = (element, event) => {
-        const userId = this._view.getElement('#uniqueID').dataset.id;
-        const filesContainer = this._view.getElement('section.content');
-        const { instance } = this._database;
+        const userId = this._view.getElement('#uniqueID').dataset.id
+        const filesContainer = this._view.getElement('section.content')
+        const { instance } = this._database
 
         const index = this._model.folderList.indexOf(element.innerHTML)
         const count = this._model.folderList.length - (index + 1)
@@ -129,10 +128,9 @@ class Controller {
 
     _updateStorage(usedStorageRef) {
         this._database.onValue(usedStorageRef, snapshot => {
-            const usedStorageData = snapshot.val();
+            const usedStorageData = snapshot.val()
             const changeProgress = (usedStorageData != undefined && usedStorageData > -1)
             const progress = this._view.getElement('.progress')
-
 
             if (changeProgress) {
                 const storage = this._view.getElement('.storage span')
@@ -140,15 +138,14 @@ class Controller {
                 let usedStorage = Math.abs((usedStorageData / (1024 * 1024)))
                 usedStorage = usedStorage === 0 ? usedStorage : usedStorage.toFixed(3)
                 usedStorage = parseFloat(usedStorage) >= 0.001 ? usedStorage : 0
-                
-                storage.innerHTML = `${usedStorage}/${totalStorage}`;
-                progress.style.width = `${(usedStorage / totalStorage) * 100}%`;
-            }else{
+
+                storage.innerHTML = `${usedStorage} / ${totalStorage}`
+                progress.style.width = `${(usedStorage / totalStorage) * 100}%`
+            } else {
                 progress.style.width = '0%'
             }
-        });
+        })
     }
-
 
     _clearFilesContainer = (container) => {
         container.innerHTML = ''
@@ -164,10 +161,6 @@ class Controller {
         const deleteBtn = this._view.getElement('#delete-item')
         const content = this._view.getElement('section.content')
 
-
-        console.log(selectedFiles.length)
-        
-
         switch (selectedFiles.length) {
             case 0:
                 editBtn.classList.add('disabled')
@@ -182,14 +175,14 @@ class Controller {
                 deleteBtn.classList.remove('disabled')
         }
 
-        if (content.innerHTML === ''){
+        if (content.innerHTML === '') {
             editBtn.classList.add('disabled')
             deleteBtn.classList.add('disabled')
         }
     }
 
     handleClearSelect = (event) => {
-        const selectedFiles = this._view.getAllElements('.item.selected')
+        const selectedFiles = this._view.getElement('.item.selected', true)
         if (!selectedFiles || selectedFiles.length < 1) return
         if (event.currentTarget !== event.target) return
 
@@ -207,7 +200,7 @@ class Controller {
         if (deleteBtn.classList.contains('disabled')) return
 
         try {
-            const userId = this._view.getElement('#uniqueID').dataset.id;
+            const userId = this._view.getElement('#uniqueID').dataset.id
             const selectedFiles = [...this._view.files].filter(file => {
                 const hasClass = file.classList.contains('selected')
                 if (hasClass) return true
@@ -351,7 +344,7 @@ class Controller {
                 const uploadTask = this._storage.uploadBytesResumable(fileRef, file)
 
                 const upload = (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                     this._view.renderUploadProgress({
                         name: file.name,
                         progress,
@@ -360,6 +353,8 @@ class Controller {
 
                 const completeUpload = async () => {
                     try {
+                        this._view.getElement('.upload-modal').style.display = 'none'
+
                         const url = await this._storage.getDownloadURL(
                             uploadTask.snapshot.ref
                         )
@@ -379,7 +374,7 @@ class Controller {
                         const response = await Fetch.post(`/user/${id}`, body)
                         const json = await response.json()
 
-                        if (json.status === 403){
+                        if (json.status === 403) {
                             alert('Você não tem espaço suficiente para fazer upload deste arquivo')
                         }
 
@@ -388,6 +383,11 @@ class Controller {
                     }
                 }
 
+                const modal = this._view.getElement('.upload-modal')
+                const progress = this._view.getElement('.upload-modal .progress')
+
+                progress.style.witdth = '0'
+                modal.style.display = 'block'
                 uploadTask.on("state_changed", upload, null, completeUpload)
                 resolve()
             })
@@ -399,19 +399,14 @@ class Controller {
             console.error(error)
             alert("Ocorreu um erro ao enviar o arquivo. Por favor, tente novamente.")
         }
-
     }
 
     handleLogout = async () => {
         try {
-
             const response = await Fetch.post('/logout', {})
             const json = await response.json()
 
-            if (json.logout) {
-                alert(json.logout)
-                window.location.assign('/login')
-            }
+            if (json.logout) window.location.assign('/login')
         } catch (error) {
             throw error
         }
@@ -422,7 +417,7 @@ class Controller {
 
         const action = {
             default: () => {
-                const selectedFiles = this._view.getAllElements('.item.selected');
+                const selectedFiles = this._view.getElement('.item.selected', true);
                 [...selectedFiles].forEach(file => file.classList.remove('selected'))
                 element.classList.add('selected')
             },
@@ -476,5 +471,4 @@ class Controller {
         const uploadElement = this._view.getElement('#upload-input')
         uploadElement.click()
     }
-
 }

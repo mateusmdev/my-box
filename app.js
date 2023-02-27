@@ -25,4 +25,8 @@ app.set('views', path.join(__dirname, '/src/view'))
 app.use('/', userRouter)
 app.use('/', pagesRouter)
 
+app.use((req, res) => {
+	return res.status(302).redirect('/')
+})
+
 module.exports = app

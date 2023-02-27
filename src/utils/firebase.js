@@ -38,6 +38,7 @@ class Firebase {
 
     async uploadRealtimeDatabase(path, obj) {
         try {
+
             const { update } = realtimeDatabase
             const database = realtimeDatabase.getDatabase(this.app)
             const ref = realtimeDatabase.ref(database)
@@ -71,7 +72,7 @@ class Firebase {
                     if (snapshot.exists()) {
                         resolve(snapshot.val())
                     } else {
-                        resolve({});
+                        resolve({})
                     }
                 })
             }
@@ -79,7 +80,7 @@ class Firebase {
             let result = await query()
     
             if (Object.keys(where).length === 0) {
-                return result;
+                return result
             }
     
             const keys = Object.keys(result)
@@ -115,10 +116,8 @@ class Firebase {
 
     async deleteStorageFile(filename){
         try {
-            console.log(filename)
             const ref = storage.ref(storage.getStorage(), filename)
             const result = await storage.deleteObject(ref)
-            console.log('Arquivo deletado')
             
         }catch(error){
             throw error

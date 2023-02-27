@@ -33,8 +33,6 @@ module.exports = {
             }
 
         } catch (error) {
-            console.log(error)
-            throw error
             res.status(302).redirect('/login')
         }
     },
@@ -45,5 +43,5 @@ module.exports = {
         } catch (error) {
             res.status(201).render('signup')
         }
-    },
+    }
 }

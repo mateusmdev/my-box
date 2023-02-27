@@ -10,7 +10,7 @@ class View {
         this.logoutButton = this.getElement('#logout')
         this.newFolderForm = this.getElement('#folder-form')
         this.contentArea = this.getElement('section.content')
-        this.files = this.getAllElements('.item')
+        this.files = this.getElement('.item', true)
         this.folderListElements = this.getElement('ol li a', true)
         this.modal = this.getElement('.new-folder-wraper')
         this.body = this.getElement('body')
@@ -44,12 +44,6 @@ class View {
         if (allElements) element = document.querySelectorAll(selector)
         else element = document.querySelector(selector)
         
-        return element
-    }
-
-    getAllElements(selector) {
-        const element = document.querySelectorAll(selector)
-        //if (!element) throw new Error("Elements doesn't exist")
         return element
     }
 
@@ -90,19 +84,12 @@ class View {
     }
 
     bindSelectFiles(handler) {
-        this.files = this.getAllElements('.item')
+        this.files = this.getElement('.item', true)
         this._addEventAll(this.files, 'click', handler)
     }
 
     bindOpenFiles(handler){
-        /*
-        const timeout = timer => new Promise((resolve, reject) => 
-                setTimeout(() => resolve(), timer)
-        )*/
-        
-        //await timeout(2000)
-
-        this.files = this.getAllElements('.item')
+        this.files = this.getElement('.item', true)
         this._addEventAll(this.files, 'dblclick', handler)
     }
 
@@ -111,7 +98,7 @@ class View {
     }
 
     bindFolderList(handler) {
-        this.folderListElements = this.getAllElements('ol li a', true)
+        this.folderListElements = this.getElement('ol li a', true)
         this._addEventAll(this.folderListElements, 'click', handler)
     }
 
@@ -131,7 +118,6 @@ class View {
         })
 
         if (list.length === 0) html = `<li> <a href="#">/</a></li>`
-
         ol.innerHTML = html
     }
 
@@ -147,19 +133,20 @@ class View {
             </form>
         </div>
         `
-
         return template
     }
 
     renderUploadProgress(file) {
-        if (file.progress < 100) {
+        const modal = this.getElement('.upload-modal')
+        if (modal.style.display !== 'block') modal.style.display = 'block'
+
+        if (file.progress) {
             this.getElement('.upload-modal .progress').style.width = `${file.progress}%`
             this.getElement('.upload-modal .file-name').innerHTML = `${file.name}`
         }
     }
 
     _fileType(mimetype) {
-        console.log(mimetype)
         const icons = {
             'text/x-csrc': 'fa-sharp fa-solid fa-c',
             'text/css': 'fa-brands fa-css3-alt',
@@ -186,7 +173,6 @@ class View {
     }
 
     createFile(data) {
-        console.log(data)
         const attr = (data.type !== 'folder') ? `data-url="${data.downloadURL}"` : ''
         const html = `<div class="item" data-file="${data.key}" data-type="${data.type}" data-name="${data.name}" ${attr} data-originalname="${data.originalName}">
             <div class="folder">

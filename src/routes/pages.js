@@ -12,5 +12,4 @@ router.get('/main', controller.main)
 
 router.get('/signup', controller.signup)
 
-
 module.exports = router

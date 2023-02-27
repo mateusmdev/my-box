@@ -8,9 +8,8 @@ module.exports = {
             const { email, password } = req.body
 
             if (!email || !password) return res.status(201).redirect('/login')
-            
 
-            const user = await firebase.findOne('users', { email: email })
+            const user = await firebase.findOne('users', { email: email.toLowerCase() })
 
             if (!user) return res.status(201).redirect('/login')
 
@@ -18,13 +17,12 @@ module.exports = {
 
             if (compareResult) {
                 const token = generateToken({
-                    email: user.name,
+                    email: user.email,
                     name: user.name,
                     id: user.id,
                     usedStorage: (user.usedStorage / (1024 * 1024)).toFixed(3),
                     totalStorage: (user.totalStorage / (1024 * 1024)).toFixed(3)
                 })
-
 
                 req.session.user = token
                 res.status(302).redirect('/main')
@@ -40,8 +38,16 @@ module.exports = {
 
     async create(req, res) {
         try {
+            const { name, email, password } = req.body
+
+            if (!name || !email || !password) return res.status(302).redirect('/signup')
+
+            const result = await firebase.findOne('users', { email: email })
+            if (result) return res.status(302).redirect('/signup')
+
             const user = {
                 ...req.body,
+                email: email.toLowerCase(),
                 password: await bcrypt.hash(req.body.password, 10),
                 createdAt: Date.now(),
                 usedStorage: 0,
@@ -79,22 +85,22 @@ module.exports = {
         }
     },
 
-    async createFolder(req, res){
-    	try{
-    		const { id } = req.params
-    		await firebase.saveRealtimeDatabase(`/users/${id}/files`, req.body)
+    async createFolder(req, res) {
+        try {
+            const { id } = req.params
+            await firebase.saveRealtimeDatabase(`/users/${id}/files`, req.body)
 
-    		return res.status(201).json({
+            return res.status(201).json({
                 status: 201,
                 upload: true
             })
 
-    	}catch{
-			res.status(500).json({
+        } catch {
+            res.status(500).json({
                 status: 500,
                 upload: false
             })
-    	}
+        }
     },
 
     async upload(req, res) {
@@ -109,8 +115,6 @@ module.exports = {
                 await firebase.saveRealtimeDatabase(`/users/${id}/files`, req.body)
                 await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, updatedBytes)
 
-                console.log('Upload')
-
                 return res.status(201).json({
                     status: 201,
                     upload: true
@@ -118,10 +122,7 @@ module.exports = {
             }
 
             const { originalName } = req.body
-            console.log(originalName)
             await firebase.deleteStorageFile(originalName)
-
-            console.log('Cheio')
 
             res.status(403).json({
                 status: 403,
@@ -152,7 +153,6 @@ module.exports = {
                 editedFile: false,
             })
         }
-
     },
 
     async deleteFile(req, res) {
@@ -168,15 +168,15 @@ module.exports = {
             if (type === 'folder') {
                 const tasks = files.map((file, index) => {
                     return new Promise(async function (resolve, reject) {
-                        let size = 0;
+                        let size = 0
                         let folderParent = file.folderParent.split('/')
                         const result = folderParent.find(parent => {
-                            return parent === key;
+                            return parent === key
                         })
 
                         if (result) {
                             if (file.type !== 'folder') {
-                                size = file.size;
+                                size = file.size
                                 await firebase.deleteStorageFile(file.originalName)
                             }
 
@@ -185,15 +185,14 @@ module.exports = {
 
                         resolve(size)
                     })
-                });
+                })
 
                 const result = await Promise.all(tasks)
 
-                const totalSize = result.reduce((acc, curr) => acc + curr, 0);
+                const totalSize = result.reduce((acc, curr) => acc + curr, 0)
 
                 const bytes = await firebase.findOne(`users/${id}/usedStorage`)
                 await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, bytes - totalSize)
-
 
             } else {
                 const { originalName } = req.body
@@ -203,7 +202,7 @@ module.exports = {
                 const file = await firebase.findOne(`users/${id}/files/${key}`)
                 const bytes = await firebase.findOne(`users/${id}/usedStorage`)
 
-                await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, bytes - file.size);
+                await firebase.uploadRealtimeDatabase(`/users/${id}/usedStorage`, bytes - file.size)
             }
 
             await firebase.deleteOne(`users/${id}/files/${key}`)

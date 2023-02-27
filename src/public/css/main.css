@@ -31,7 +31,7 @@ header{
 .storage .progress {
     background-color: var(--primary-color);
     height: 100%;
-    width: 67%;
+    width: 0%;
 }
 header .header-content{
     width: calc(100%);
@@ -114,7 +114,8 @@ section.content{
     width: 70%;
     margin: auto;
     border-radius: 3px;
-    border: 1px solid var(--line-color)
+    border: 1px solid var(--line-color);
+    display: none;
 }
 .upload-modal .modal-content{
     padding: 0.7rem;
@@ -132,7 +133,7 @@ section.content{
     background-color: var(--color-text);
 }
 .upload-modal .progress{
-    width: 73%;
+    width: 0%;
     background-color: var(--primary-color);
     height: 100%;
 }

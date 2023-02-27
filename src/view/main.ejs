@@ -31,7 +31,7 @@
                 </div>
                 <br>
                 <span>
-                    <%= data.usedStorage %>/<%= data.totalStorage%>
+                    <%= data.usedStorage %> / <%= data.totalStorage%>
                 </span>
             </div>
 
@@ -49,171 +49,7 @@
         <%- include('./parts/sidebar'); %>
     </header>
     <main>
-        <section class="content">
-            <div class="item">
-                <div class="folder">
-                    <i class="fas fa-folder"></i>
-                    <span>Meus arquivos</span>
-                </div>
-            </div>
-
-            <div class="item selected">
-                <div class="file">
-                    <i class="fas fa-file"></i>
-                    <span>Arquivoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-brands fa-python"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-brands fa-js"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-brands fa-square-js"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-sharp fa-solid fa-c"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-brands fa-html5"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-brands fa-css3-alt"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-solid fa-image"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-regular fa-image"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-solid fa-images"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-solid fa-file-audio"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-solid fa-music"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-sharp fa-solid fa-file-music"></i>
-                    <span></span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-brands fa-php"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-brands fa-java"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-brands fa-vuejs"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-solid fa-file-pdf"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fa-solid fa-file-zipper"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fas fa-file"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fas fa-file"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fas fa-file"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fas fa-file"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fas fa-file"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fas fa-file"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fas fa-file"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-            <div class="item">
-                <div class="file">
-                    <i class="fas fa-file"></i>
-                    <span>Arquivo.py</span>
-                </div>
-            </div>
-        </section>
+        <section class="content"></section>
     </main>
 
     <aside>
@@ -245,7 +81,6 @@
     </aside>
 </body>
 <script src="/public/js/env.js"></script>
-<script src="/public/js/dao.js"></script>
 <script src="/public/js/utils/fetch.js"></script>
 <script src="/public/js/model/user.js"></script>
 <script src="/public/js/view/main.view.js"></script>
@@ -265,8 +100,6 @@
     }
     
     const firebaseObjects = { getStorage, refStorage, uploadBytesResumable, getDownloadURL }
-
     const controller = new Controller(new View(), new User(), firebaseObjects, realtimeDatabase)
 </script>
-
 </html>
