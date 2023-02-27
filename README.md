@@ -14,6 +14,7 @@ Esse projeto foi criado com o objetivo de fazer upload de arquivos na nuvem e ba
 
 Um resumo do projeto:
 <ul>
+  <li>Multiusuário</li>
   <li>Realizar CRUD através das rotas (GET, POST, PUT, DELETE)</li>
   <li>Cadastro de novo usuário</li>
   <li>Login/Autenticação JWT</li>
@@ -24,7 +25,6 @@ Um resumo do projeto:
   <li>Uso de sessão para manter o usuário logado</li>
   <li>Designer responsivo</li>
   <li>Light Mode/Dark Mode</li>
-  <li>Migrations para documentação do banco</li>
 </ul>
 
 ### Ferramentas utilizadas
